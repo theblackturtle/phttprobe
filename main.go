@@ -28,6 +28,8 @@ func main() {
 	flag.IntVar(&to, "t", 10, "timeout (second)")
 	var verbose bool
 	flag.BoolVar(&verbose, "v", false, "output errors to stderr")
+	var portsIndex int
+	flag.IntVar(&portsIndex, "i", 1, "Index of ports")
 	flag.Parse()
 
 	re := func(req *http.Request, via []*http.Request) error {
@@ -79,11 +81,11 @@ func main() {
 		line := strings.ToLower(sc.Text())
 
 		lineArgs := strings.Split(line, ",")
-		if len(lineArgs) < 3 {
+		if len(lineArgs) < 2 {
 			continue
 		}
 		domain := lineArgs[0]
-		ports := lineArgs[1:]
+		ports := lineArgs[portsIndex:]
 		for _, p := range ports {
 			urls <- fmt.Sprintf("http://%s:%s", domain, p)
 			urls <- fmt.Sprintf("https://%s:%s", domain, p)
